@@ -1,0 +1,42 @@
+-- 데이터베이스 생성
+CREATE DATABASE IF NOT EXISTS board;
+
+-- 유저 생성 및 모든 권한 부여
+CREATE USER IF NOT EXISTS 'beda'@'%' IDENTIFIED BY 'dnwlsl8403@';
+GRANT ALL PRIVILEGES ON board.* TO 'beda'@'%';
+
+-- 권한 변경 사항 즉시 반영
+FLUSH PRIVILEGES;
+
+-- 테이블 생성
+USE board;
+
+-- 게시글 테이블
+CREATE TABLE IF NOT EXISTS board (
+  uuid VARCHAR(36) PRIMARY KEY,
+  title VARCHAR(100) NOT NULL,
+  maker VARCHAR(10) NOT NULL,
+  view INT NOT NULL DEFAULT 0,
+  date DATETIME DEFAULT CURRENT_TIMESTAMP,
+  udate DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 사용자 테이블
+CREATE TABLE IF NOT EXISTS user (
+  id VARCHAR(10) PRIMARY KEY,
+  password VARCHAR(255) NOT NULL
+);
+
+-- 파일 정보 테이블
+CREATE TABLE IF NOT EXISTS board_file (
+  uuid VARCHAR(36) NOT NULL,
+  filename VARCHAR(100) NOT NULL,
+  maker VARCHAR(10) NOT NULL
+);
+
+-- 게시글 내용 테이블
+CREATE TABLE IF NOT EXISTS board_content (
+  uuid VARCHAR(36) NOT NULL,
+  maker VARCHAR(10) NOT NULL,
+  content VARCHAR(1000) NOT NULL
+);

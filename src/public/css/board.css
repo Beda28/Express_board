@@ -1,0 +1,109 @@
+body {
+  background-color: #fdfdfd;
+}
+
+main {
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.filter {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding: 20px;
+  width: 800px;
+  align-items: center;
+}
+
+.filter>div>input {
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.filter>div>button {
+  padding: 10px;
+  width: 75px;
+  border-radius: 10px;
+  transition: 0.5s;
+  border: 1px solid gray;
+}
+
+.filter>a {
+  background-color: #3496ff;
+  color: white;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+  transition: 0.5s;
+  margin: 10px 10px 10px 0;
+  text-decoration: none;
+}
+
+.filter>a:hover,
+.filter>div>button:hover {
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.titi{
+  background-color: rgb(240, 240, 240);
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  width: 800px;
+  padding: 10px;
+}
+
+.title{
+  width: 400px;
+  text-align: center;
+}
+
+.titlel{
+  width: 400px;
+  padding-left: 10px;
+}
+
+.maker{
+  width: 100px;
+  text-align: center;
+}
+
+.date{
+  width: 200px;
+  text-align: center;
+}
+.view{
+  width: 100px;
+  text-align: center;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 800px;
+}
+
+.list>div {
+  display: flex;
+  justify-content: space-between;
+  background-color: #ffffff;
+  width: 100%;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid gray;
+}
+
+.list>div:hover {
+  cursor: pointer;
+}
+
+.list>div>p {
+  color: #333;
+}

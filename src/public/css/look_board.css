@@ -1,0 +1,138 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 100px;
+    padding-bottom: 200px;
+}
+
+.main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    width: 1000px;
+}
+
+.title{
+    width: 800px;
+    font-size: 20px;
+}
+
+.title > p{
+    font-size: 30px;
+    padding: 20px;
+}
+
+.sub{
+    width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid gray;
+    padding: 10px 20px;
+}
+
+.maker, .date{
+    width: 200px;
+    text-align: left;
+}
+
+.maker{
+    font-size: 20px;
+}
+
+.date{
+    font-size: 15px;
+}
+
+.maker, .date{
+    color: gray;
+}
+
+.content{
+    width: 800px;
+    height: auto;
+}
+
+.content > textarea{
+    font-size: 25px;
+    resize: none;
+    width: 100%;
+    border: none;
+    background-color: white;
+    transition: 0.4s;
+    height: 100%;
+    padding: 20px;
+}
+
+.foot{
+    width: 800px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.file{
+    display: none;
+    width: 400px;
+    padding: 10px;
+    align-items: center;
+    transition: 0.2s;
+    border-radius: 10px;
+}
+
+.file:hover{
+    cursor: pointer;
+}
+
+.file > img{
+    width: 30px;
+    height: 30px;
+}
+
+.filename{
+    font-size: 20px;
+    margin: 0 10px;
+}
+
+.back > a{
+    text-decoration: none;
+    color: black;
+    transition: 0.4s;
+    border-radius: 10px;
+    padding: 10px 10px;
+}
+
+.back > a:hover{
+    background-color: #007BFF;
+    color: white;
+}
+
+.btns{
+    display: none;
+    align-items: center;
+}
+
+.add, .del{
+    padding: 10px 20px;
+    color: black;
+    font-size: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    transition: 0.3s;
+    background-color: #f5f5f5;
+}
+
+.add:hover, .del:hover{
+    color: white;
+    cursor: pointer;
+}
+
+.add:hover{
+    background-color: #007BFF;
+}
+
+.del:hover{
+    background-color: red;
+}

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Beda</title>
+    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="/css/making_board.css">
+</head>
+
+<body>
+    <header>
+        <a href="#" class="logo">logo</a>
+        <div class="ml">
+            <a href="#">블로그</a>
+            <a href="#">상담하기</a>
+            <a href="board.html">게시판</a>
+        </div>
+        <div class="login"></div>
+    </header>
+
+    <main>
+        <div class="title">
+            <input type="text" placeholder="제목을 입력해주세요" maxlength="20">
+        </div>
+        <div class="content">
+            <textarea type="text" placeholder="내용을 입력해주세요" maxlength="1000"></textarea>
+        </div>
+        <label for="fileInput" class="file">파일 선택</label>
+        <input name="file" type="file" id="fileInput" />
+        <button>작성완료</button>
+    </main>
+
+    <script type="module" src="/js/header.js"></script>
+    <script type="module" src="/js/making_board.js"></script>
+</body>
+
+</html>
