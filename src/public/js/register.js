@@ -16,14 +16,15 @@ document.querySelector("form").addEventListener("submit", (e) => {
             password: pa
         })
     })
-    .then(response=>{
+    .then(async (response)=>{
+        const result = await response.json()
+
         if (response.status === 200){
-            alert("회원가입 성공\n로그인해주세요");
-            window.location.href = "login.html";
-        }else if (response.status === 201){
-            alert("이미 존재하는 ID입니다")
-        }else if (response.status === 404){
-            alert("서버에 오류가 발생했습니다! 잠시 후 다시 시도해주세요")
+            alert(result.message)
+            window.location.href = "login.html"
+        }
+        else{
+            alert(result.message)
         }
     })
 })

@@ -16,14 +16,15 @@ document.querySelector("form").addEventListener("submit", (e) => {
             password: pass
         })
     })
-    .then(response=>{
+    .then(async(response)=>{
+        const result = await response.json();
+        
         if (response.status === 200){
-            alert("로그인 성공");
+            alert(result.message)
             window.location.href = "index.html";
-        }else if (response.status === 201){
-            alert("로그인 실패! 아이디 또는 비밀번호를 확인해주세요.")
-        }else if (response.status === 404){
-            alert("서버에 오류가 발생했습니다! 잠시 후 다시 시도해주세요")
+        }
+        else{
+            alert(result.message)
         }
     })
 })

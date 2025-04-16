@@ -10,6 +10,7 @@ const route = require('./route/route');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
 app.use(session({
   secret: 'adminroot',
   resave: false,

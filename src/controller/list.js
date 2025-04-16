@@ -2,14 +2,22 @@ const db = require("../config/db")
 const fs = require("fs")
 const path = require("path");
 const { v4: uuidv4 } = require('uuid');
+const multer = require("multer")
 
 exports.checkboard = (req, res) => {
-    db.query("SELECT uuid, title, maker, DATE_FORMAT(date, '%Y-%m-%d') AS date, view from board;", (err, result) => {
+    db.query("SELECT uuid, title, maker, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date, view FROM board ORDER BY date DESC;", (err, result) => {
         if (err) {
             res.status(202).json(err)
         } else {
             res.status(200).json({ result })
         }
+    })
+}
+
+exports.search = (req, res) => {
+    db.query("SELECT uuid, title, maker, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date, view FROM board WHERE title LIKE CONCAT('%', ?, '%') OR maker LIKE CONCAT('%', ?, '%') ORDER BY date DESC;", [req.body.search, req.body.search, req.body.search], (err, result) => {
+        if (err) res.status(202).json(err)
+        else res.status(200).json({result})
     })
 }
 
@@ -132,4 +140,17 @@ exports.downloadfile = (req, res) => {
             return
         })
     })
+}
+
+exports.checkfile = (req, res) => {
+    const file = req.file;
+    const allow = [".txt", ".hwp", ".pdf", ".jpg", ".png"]
+    const ext = path.extname(file.originalname).toLocaleLowerCase();
+
+    if (!allow.includes(ext)) {
+        fs.unlinkSync(file.path)
+        db.query("delete from board where uuid = ?", req.body.uuid)
+        db.query("delete from board_content where uuid = ?", req.body.uuid)
+        return res.status(415).json({message: "허용되지 않은 확장자입니다."})
+    }
 }

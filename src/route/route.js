@@ -5,6 +5,7 @@ const path = require("path");
 const router = express.Router()
 const session = require("../controller/session")
 const list = require("../controller/list")
+const iconv = require('iconv-lite');
 
 const upload = multer({
     storage:
@@ -20,11 +21,14 @@ const upload = multer({
                 cb(null, uploadPath);
             },
             filename: (req, file, cb) => {
-                const encodedName = Buffer.from(file.originalname, 'utf8').toString('latin1');
-                cb(null, encodedName);
+                const raw = Buffer.from(file.originalname, 'latin1');
+                const decoded = iconv.decode(raw, 'utf8');
+                const safeName = decoded.replace(/[\\/:*?"<>|]/g, "_");
+                cb(null, safeName);
             }
         })
 });
+
 
 router.get('/checklogin', (req, res) => {
     if (req.session.user) {
@@ -45,6 +49,10 @@ router.post('/register', (req, res) => {
 
 router.get('/logout', (req, res) => {
     session.logout(req, res);
+})
+
+router.post('/search', (req, res) =>{
+    list.search(req, res)
 })
 
 router.get('/checklist', (req, res) => {
@@ -72,6 +80,7 @@ router.post('/deleteboard', (req, res) => {
 })
 
 router.post('/upload', upload.single('file'), (req, res) => {
+    list.checkfile(req, res);
     list.uploadfile(req, res);
 })
 

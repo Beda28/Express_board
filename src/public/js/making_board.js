@@ -19,6 +19,9 @@ document.querySelector("button").addEventListener("click", () => {
     let fi = 0
     const ti = document.querySelector("input").value
     const co = document.querySelector("textarea").value
+
+    if (ti.trim().length == 0 || co.trim().length == 0) return alert("제목과 내용에 공백은 입력할 수 없습니다.")
+
     if (document.querySelector("#fileInput").files.length > 0) { fi = document.querySelector("#fileInput").files[0] }
 
     fetch(`http://${loc.ptr}:3000/addboard`, {
@@ -51,6 +54,7 @@ document.querySelector("button").addEventListener("click", () => {
                     body: form
                 }).then(response => {
                     if (response.status === 404) alert("서버 오류. 파일이 성공적으로 업로드되지 않았습니다!")
+                    else if (response.status === 415) alert("허용되지 않는 확장자입니다.")
                     else if (response.status === 200){
                         alert("작성 완료!")
                         window.location.href = "board.html"
