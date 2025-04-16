@@ -1,21 +1,20 @@
 import loc from "./config.js";
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
     let url = new URL(window.location.href)
     let urlParams = url.searchParams
     let id = urlParams.get("uuid")
     let user = null
 
-    fetch(`http://${loc.ptr}:3000/checklogin`, {
+    const res = await fetch(`http://${loc.ptr}:3000/checklogin`, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json' }
     })
-        .then(response => {
-            if (response.status === 201) return response.json()
-            else return Promise.reject()
-        })
-        .then(data => { user = data.username })
-        .catch(err => { })
+
+    if (res.status === 201){
+        const result = await res.json()
+        user = result.username
+    }
 
     fetch(`http://${loc.ptr}:3000/lookboard`, {
         method: 'POST',
