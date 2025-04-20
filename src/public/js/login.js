@@ -1,7 +1,10 @@
 import loc from "./config.js";
 
-document.querySelector("form").addEventListener("submit", (e) => {
-    e.preventDefault()
+document.querySelector("button").addEventListener("click", () => {
+    const button = document.querySelector("button")
+
+    if (button.textContent != "로그인") return
+    button.textContent = '로딩중'
 
     let name = document.querySelector(".name").value
     let pass = document.querySelector(".passwd").value
@@ -25,6 +28,7 @@ document.querySelector("form").addEventListener("submit", (e) => {
         }
         else{
             alert(result.message)
+            button.textContent = "로그인"
         }
     })
 })

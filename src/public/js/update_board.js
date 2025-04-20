@@ -30,6 +30,11 @@ window.addEventListener("DOMContentLoaded", () => {
 // 이미 올린 파일을 삭제시켜서 파일 있는 게시물에서 파일 없는 게시물로 변환시키는것도 좋을것 같다
 
 document.querySelector("button").addEventListener("click", () => {
+    const button = document.querySelector("button")
+
+    if (button.textContent != "수정완료") return
+    button.textContent = '로딩중'
+
     const ti = document.querySelector("input").value
     const co = document.querySelector("textarea").value
 
@@ -51,14 +56,15 @@ document.querySelector("button").addEventListener("click", () => {
         })
     })
         .then(response => {
-            if (response.status === 404){
-                return alert("Error : 서버 오류")
-            }
+            if (response.status === 404) return alert("Error : 서버 오류")
+            else if (response.status === 405) return alert("공백은 입력할 수 없습니다.")
+            else if (response.status === 406) return alert("제한길이를 넘겼습니다.")
             else if (response.status === 200) {
                 alert("수정 완료")
                 window.location.href = "board.html"
             }
         })
+    button.textContent = '수정완료'
 })
 
 // 업로드된 파일이 수정되었다면, 수정안으로 저장시키는 과정이 필요
