@@ -2,7 +2,6 @@ const db = require("../config/db")
 const fs = require("fs")
 const path = require("path");
 const { v4: uuidv4 } = require('uuid');
-const multer = require("multer")
 
 exports.checkboard = (req, res) => {
     db.query("SELECT uuid, title, maker, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date, view FROM board ORDER BY date DESC;", (err, result) => {
@@ -26,6 +25,20 @@ exports.addboard = (req, res) => {
 
     if (req.body.content.trim().length == 0 || req.body.title.trim().length == 0) return res.status(405).json({message : "공백은 입력할 수 없습니다."})
     else if(req.body.content.trim().length >= 1000 || req.body.title.trim().length >= 20) return res.status(406).json({message : "제한길이를 넘겼습니다."})
+
+    db.query("select maker, date from board order by date desc limit 1;", (err, result) => {
+        if (err) return res.status(500).json()
+
+        if (result.length > 0){
+            const lastPost = result[0]
+            const lastDate = new Date(lastPost.date)
+
+            const diffSeconds = (now - lastDate) / 1000;
+            if (lastPost.maker === req.session.username ** diffSeconds <= 7){
+                return res.status(201).json()
+            }
+        }
+    })
 
     db.query("insert into board_content(uuid, content, maker) value (?,?,?);", [uuid, req.body.content, req.session.user.username], (err) => {
         if (err) return res.status(404).json(err)
