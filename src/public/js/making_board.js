@@ -41,6 +41,7 @@ document.querySelector("button").addEventListener("click", () => {
             if (response.status === 404) return alert("Error : 잠시 후 다시 시도해주세요")
             else if (response.status === 405) return alert("공백은 입력할 수 없습니다.")
             else if (response.status === 406) return alert("제한길이를 넘겼습니다.")
+            else if (response.status === 201) return alert("중복 작성은 안됩니다.")
             else if (response.status === 200) {
                 if (fi == 0) {
                     alert("작성 완료!")

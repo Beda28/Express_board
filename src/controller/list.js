@@ -21,6 +21,7 @@ exports.search = (req, res) => {
 }
 
 exports.addboard = (req, res) => {
+    const now = new Date();
     const uuid = uuidv4();
 
     if (req.body.content.trim().length == 0 || req.body.title.trim().length == 0) return res.status(405).json({message : "공백은 입력할 수 없습니다."})
@@ -34,7 +35,7 @@ exports.addboard = (req, res) => {
             const lastDate = new Date(lastPost.date)
 
             const diffSeconds = (now - lastDate) / 1000;
-            if (lastPost.maker === req.session.username ** diffSeconds <= 7){
+            if (lastPost.maker === req.session.username && diffSeconds <= 7){
                 return res.status(201).json()
             }
         }
