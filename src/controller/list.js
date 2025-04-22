@@ -27,19 +27,12 @@ exports.addboard = (req, res) => {
     if (req.body.content.trim().length == 0 || req.body.title.trim().length == 0) return res.status(405).json({message : "공백은 입력할 수 없습니다."})
     else if(req.body.content.trim().length >= 1000 || req.body.title.trim().length >= 20) return res.status(406).json({message : "제한길이를 넘겼습니다."})
 
-    db.query("select maker, date from board order by date desc limit 1;", (err, result) => {
-        if (err) return res.status(500).json()
+    const lastPostTime = req.session.lastPostTime ? new Date(req.session.lastPostTime) : null;
+    if (lastPostTime && (now - lastPostTime) / 1000 <= 7) {
+        return res.status(201).json();
+    }
 
-        if (result.length > 0){
-            const lastPost = result[0]
-            const lastDate = new Date(lastPost.date)
-
-            const diffSeconds = (now - lastDate) / 1000;
-            if (lastPost.maker === req.session.username && diffSeconds <= 7){
-                return res.status(201).json()
-            }
-        }
-    })
+    req.session.lastPostTime = now;
 
     db.query("insert into board_content(uuid, content, maker) value (?,?,?);", [uuid, req.body.content, req.session.user.username], (err) => {
         if (err) return res.status(404).json(err)
