@@ -6,17 +6,17 @@ const { v4: uuidv4 } = require('uuid');
 exports.checkboard = (req, res) => {
     db.query("SELECT uuid, title, maker, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date, view FROM board ORDER BY date DESC;", (err, result) => {
         if (err) {
-            res.status(202).json(err)
+            return res.status(202).json(err)
         } else {
-            res.status(200).json({ result })
+            return res.status(200).json({ result })
         }
     })
 }
 
 exports.search = (req, res) => {
     db.query("SELECT uuid, title, maker, DATE_FORMAT(date, '%Y-%m-%d') AS formatted_date, view FROM board WHERE title LIKE CONCAT('%', ?, '%') OR maker LIKE CONCAT('%', ?, '%') ORDER BY date DESC;", [req.body.search, req.body.search, req.body.search], (err, result) => {
-        if (err) res.status(202).json(err)
-        else res.status(200).json({result})
+        if (err) return res.status(202).json(err)
+        else return res.status(200).json({result})
     })
 }
 
@@ -28,7 +28,7 @@ exports.addboard = (req, res) => {
     else if(req.body.content.trim().length >= 1000 || req.body.title.trim().length >= 20) return res.status(406).json({message : "제한길이를 넘겼습니다."})
 
     const lastPostTime = req.session.lastPostTime ? new Date(req.session.lastPostTime) : null;
-    if (lastPostTime && (now - lastPostTime) / 1000 <= 7) {
+    if (lastPostTime && (now - lastPostTime) / 1000 <= 3) {
         return res.status(201).json();
     }
 
@@ -51,8 +51,8 @@ exports.lookboard = (req, res) => {
             db.query("update board set view=view + 1 where uuid=?;", req.body.uuid)
 
             db.query("select * from board_file where uuid = ?;", req.body.uuid, (err, trex) => {
-                if (trex) res.status(200).json({ board: result, file: trex })
-                else res.status(200).json({ board: result })
+                if (trex) return res.status(200).json({ board: result, file: trex })
+                else return res.status(200).json({ board: result })
             })
         }
     })
@@ -63,8 +63,8 @@ exports.getboard = (req, res) => {
         if (err) return res.status(404).json(err)
         else {
             db.query("select * from board_file where uuid = ?;", req.body.uuid, (err, trex) => {
-                if (trex) res.status(200).json({ board: result, file: trex })
-                else res.status(200).json({ board: result })
+                if (trex) return res.status(200).json({ board: result, file: trex })
+                else return res.status(200).json({ board: result })
             })
         }
     })
@@ -81,7 +81,7 @@ exports.updateboard = (req, res) => {
     db.query("update board_content set content = ? where uuid = ?;", [req.body.content, req.body.uuid], (err) => {
         if (err) return res.status(404).json(err)
     })
-    res.status(200).json()
+    return res.status(200).json()
 }
 
 exports.deleteboard = (req, res) => {
@@ -115,7 +115,7 @@ exports.deleteboard = (req, res) => {
                         if (err3) return res.status(404).json(err3)
                         
                         if(check.length === 0) return res.status(200).json()
-                        else return res.status(404).json
+                        else return res.status(404).json()
                     })
                 })
             })
@@ -124,42 +124,35 @@ exports.deleteboard = (req, res) => {
 }
 
 exports.uploadfile = (req, res) => {
-    if (!req.file) return res.status(404).json()
-    db.query("insert into board_file(uuid, filename, maker) value (?,?,?);", [req.body.uuid, req.file.filename, req.session.user.username], (err, result) => {
+    if (!req.files || !req.files.file || req.files.file.length === 0) return res.status(400).json("파일이 없습니다.");
+    const file = req.files.file[0]; 
+
+    db.query("insert into board_file(uuid, filename, maker) value (?,?,?);", [req.body.uuid, file.filename, req.session.user.username], (err, result) => {
         if (err) return res.status(404).json()
         else return res.status(200).json()
     })
 }
 
 exports.downloadfile = (req, res) => {
-    const folderpath = path.join(__dirname, "../uploads", req.params.uuid)
+    const { uuid } = req.params;
 
-    if (!fs.existsSync(folderpath)) {
-        return res.status(404).json();
-    }
+    if (uuid.includes("..") || uuid.includes("/") || uuid.includes("\\")) return res.status(400).send("잘못된 파일 요청입니다.");
 
-    fs.readdir(folderpath, (err, files) => {
-        if (err) return res.status(500).json()
+    const folderPath = path.join(__dirname, "../uploads", uuid);
+    if (!fs.existsSync(folderPath)) return res.status(404).send("해당 파일을 찾을 수 없습니다.");
 
-        const filename = files[0]
-        const filepath = path.join(folderpath, files[0])
+    fs.readdir(folderPath, (err, files) => {
+        if (err) return res.status(500).send("서버 오류");
+        if (files.length === 0) return res.status(404).send("폴더에 파일이 없습니다.");
 
-        res.download(filepath, filename, (e) => {
-            if (e) return res.status(500).json()
-            return
-        })
-    })
-}
+        const filename = files[0];
+        const filePath = path.join(folderPath, filename);
 
-exports.checkfile = (req, res) => {
-    const file = req.file;
-    const allow = [".txt", ".hwp", ".pdf", ".jpg", ".png"]
-    const ext = path.extname(file.originalname).toLocaleLowerCase();
-
-    if (!allow.includes(ext)) {
-        fs.unlinkSync(file.path)
-        db.query("delete from board where uuid = ?", req.body.uuid)
-        db.query("delete from board_content where uuid = ?", req.body.uuid)
-        return res.status(415).json({message: "허용되지 않은 확장자입니다."})
-    }
-}
+        res.download(filePath, filename, (err) => {
+            if (err) {
+                console.error("파일 다운로드 오류:", err);
+                return res.status(500).send("다운로드 실패");
+            }
+        });
+    });
+};

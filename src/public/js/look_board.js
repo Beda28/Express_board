@@ -66,12 +66,9 @@ window.addEventListener("DOMContentLoaded", async () => {
                             })
                         })
                             .then(response => {
-                                if (response.status === 202) {
-                                    alert("사용자가 작성한 글이 아닙니다")
-                                }
-                                else if (response.status === 200) {
-                                    alert("삭제 성공")
-                                }
+                                if (response.status === 202) return alert("사용자가 작성한 글이 아닙니다")
+                                else if (response.status === 404 || response.status === 500) return alert("서버 오류")
+                                else if (response.status === 200) alert("삭제 성공")
                                 window.location.href = "board.html"
                             })
                     })
